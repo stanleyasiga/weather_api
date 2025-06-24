@@ -1,0 +1,15 @@
+{
+  "name": "weather_api",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "test": "jest"
+  },
+  "repository": "https://github.com/stanleyasiga/weather_api.git",
+  "author": "Stanley <austinstan24@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
