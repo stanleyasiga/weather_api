@@ -1,29 +1,33 @@
 import axios from "axios";
 import { createClient } from "redis";
+import "dotenv/config";
 
 const getWeatherDataApi = async () => {
+  const cityCode = process.env.CITY_CODE;
+  const apiKey = process.env.API_KEY;
   try {
     const response = await axios.get(
-      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/kampala?key=BY6KU2J88B3YDGFWWRULG678Z`
+      `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${cityCode}?key=${apiKey}`
     );
-
     // default connection port (6379)
     const client = await createClient({
-      url: "redis-16267.c80.us-east-1-2.ec2.redns.redis-cloud.com:16267",
+      username: "default",
+      password: "PriMb8lOycPonEGROMvdGFT2cjHm48Ll",
+      socket: {
+        host: process.env.REDIS_CONNECTION,
+        port: 16267,
+      },
     })
       .on("error", (err) => console.log("Redis client error", err))
       .connect();
-
-    // use client.isReady or client.isOpen
-    if (client?.isReady()) {
-      console.log("connected");
-      await client.set("key", "value");
+    if (client.isReady) {
+      await client.set(cityCode, response?.data?.resolvedAddress);
     }
-    client.destroy();
-    // console.log(response?.data);
   } catch (error) {
-    console.log(error);
+    console.log(`oops!!! server error : ${error}`);
   }
 };
 
 getWeatherDataApi();
+
+//implement rate limiting with express js
